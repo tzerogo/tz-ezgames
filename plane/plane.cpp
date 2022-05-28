@@ -5,6 +5,12 @@
 
 #include <time.h>
 
+void HideCursor()
+{
+    CONSOLE_CURSOR_INFO cursor_info = {1, 0}; //第二个值为0表示隐藏光标
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
+}
+
 int main(int argc, char const *argv[])
 {
     int i = 0, j = 0;
@@ -18,6 +24,9 @@ int main(int argc, char const *argv[])
     clock_t start, stop;
     double s=1;
     double speed=0;
+
+    HideCursor();
+    SetConsoleTitle("try your speed");
 
     start = clock();
 
