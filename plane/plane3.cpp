@@ -10,7 +10,7 @@ int enemy_x, enemy_y;
 int choice, decelerate = 10;
 int score = 0;
 
-char myplane_shape='本',enemy_shape='敌',bullet_shape='|';
+char myplane_shape='M',enemy_shape='@',bullet_shape='|';
 
 void gotoxy(int x, int y)
 {
