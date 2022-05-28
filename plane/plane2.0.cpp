@@ -143,7 +143,7 @@ void show()
     }
 }
 
-void updateWithInout() //与输入you关
+void updateWithInout() //与输入有关
 {
     char input;
     if (kbhit())
@@ -187,7 +187,7 @@ void updateWithInout() //与输入you关
     }
 }
 
-void updateWithoutInput() //与输入wu关
+void updateWithoutInput() //与输入无关
 {
     for (p = 0; p < enemynum; p++)
     {
@@ -286,7 +286,7 @@ void updateWithoutInput() //与输入wu关
         }
     }
 
-    switch (damage) //实现被击中一次后频闪，两次结束游戏
+    switch (damage) //实现血量为1后频闪，血量为0结束游戏
     {
     case 0:
         myplane_shape = 'M';
@@ -425,7 +425,7 @@ void choosespeed()
     system("cls");
 }
 
-void SetSize(unsigned uCol, unsigned uLine)
+void SetSize(unsigned uCol, unsigned uLine)//调整控制台大小
 {
     char cmd[64];
     sprintf(cmd, "mode con cols=%d lines=%d", uCol, uLine);
