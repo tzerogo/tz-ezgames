@@ -4,10 +4,10 @@
 #include <windows.h>
 #include <time.h> //发射子弹的冷却
 
-int high = 25, width = 50;
+int height = 25, width = 50;
 int myplane_x, myplane_y;
-int bullet0_x[25], bullet0_y[25];
-int enemy_x[99], enemy_y[99];
+int bullet0_x[25] = {0}, bullet0_y[25] = {0}; //初始不显示
+int enemy_x[99] = {0}, enemy_y[99];
 int health_x, health_y;
 int choice, decelerate = 10, gradual = 0; //游戏难度
 int score = 0;
@@ -17,9 +17,10 @@ int esc = 1;                                                                 //�
 int enemynum = 1, enemyget = 0;
 int bullet0num = 25, bullet0get = 0, order = 0;
 int p = 0, q = 0;
-clock_t start_t, finish_t;
+clock_t start_t;
 double CD = 0.6;
 char model[20];
+int escape = 0;
 
 char myplane_shape = 'M', enemy_shape = '@', bullet0_shape = '|', health_shape = '$';
 
@@ -40,14 +41,10 @@ void HideCursor()
 
 void startup()
 {
-    myplane_x = high / 2;
+    myplane_x = height / 2;
     myplane_y = width / 2;
 
-    bullet0_x[99] = -1; //初始不显示
-    bullet0_y[99] = myplane_y;
-
-    enemy_x[99] = 0;
-    enemy_y[99] = width / 2 + 1;
+    enemy_y[0] = width / 2;
 
     health_x = -1;
     health_y = myplane_y;
@@ -68,7 +65,7 @@ void show()
         enemynum = score / 10 + 1;
     }
 
-    for (i = 0; i < high; i++) //双循环遍历位置，放置符号 excellent
+    for (i = 0; i < height; i++) //双循环遍历位置，放置符号 excellent
     {
         for (j = 0; j < width; j++)
         {
@@ -89,11 +86,12 @@ void show()
             }
 
             //产生边框
+
             if (i == 0)
             {
                 printf("_");
             }
-            else if ((i == high - 1) && (j != 0) && (j != width - 1))
+            else if ((i == height - 1) && (j != 0) && (j != width - 1))
             {
                 printf("_");
             }
@@ -132,7 +130,7 @@ void show()
         }
         printf("\n");
     }
-    printf("\n\n   Score: %3d   Health: %d    Model:%s\n", score, health - damage, model);
+    printf("\n\n Score:%3d  Health:%2d  Escape:%2d   Model:%s\n", score, health - damage, escape, model);
 
     if (esc == -1)
     {
@@ -162,7 +160,7 @@ void updateWithInout() //与输入有关
         {
             myplane_x--;
         }
-        if ((input == 's') && (myplane_x < high - 2))
+        if ((input == 's') && (myplane_x < height - 2))
         {
             myplane_x++;
         }
@@ -223,6 +221,7 @@ void updateWithoutInput() //与输入无关
             if ((bullet0_x[q] == enemy_x[p]) && (bullet0_y[q] == enemy_y[p])) //
             {
                 score++;
+                // printf("\a");
                 enemy_x[p] = 0;
                 enemy_y[p] = rand() % (width - 2) + 1;
                 bullet0_x[q] = -1;
@@ -244,10 +243,11 @@ void updateWithoutInput() //与输入无关
     if (ten2one == decelerate)
     {
         for (p = 0; p < enemynum; p++)
-            if (enemy_x[p] > high)
+            if (enemy_x[p] > height)
             {
                 enemy_x[p] = 0;
                 enemy_y[p] = rand() % (width - 2) + 1;
+                escape++;
             }
             else
             {
@@ -272,7 +272,7 @@ void updateWithoutInput() //与输入无关
             nine2one++;
         if (nine2one == 10)
         {
-            if (health_x > high)
+            if (health_x > height)
             {
                 health_x = -1;
                 health_y = rand() % (width - 2) + 1;
@@ -293,7 +293,7 @@ void updateWithoutInput() //与输入无关
         break;
 
     case 1:
-        if (opo <= 13)
+        if (opo <= 13) //频闪速度
         {
             myplane_shape = ' ';
             opo++;
@@ -327,7 +327,7 @@ void SetSize();
 int main(int argc, char const *argv[])
 {
     char chCmd[64];
-    sprintf(chCmd, "mode con cols=%d lines=%d", width, high + 9);
+    sprintf(chCmd, "mode con cols=%d lines=%d", width, height + 9);
     system(chCmd); //设置控制台大小
 
     SetConsoleTitle("Strike the Enemy");
@@ -338,7 +338,7 @@ int main(int argc, char const *argv[])
 
     startup();
 
-trytry:
+trytry://此处未放到startup前不造成不好影响,可产生重开与续命区别
     while (game == 1)
     {
         show();
@@ -387,7 +387,7 @@ trytry:
 
 void choosespeed()
 {
-    printf("\n\n          #Select the difficulty:\n\n\n");
+    printf("\n\n            #Select the Model:\n\n\n");
     printf(" 0:Gradual  1:Noob  2:Common  3:Master  -1:CRAZY  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                       ");
     scanf("%d", &choice);
     switch (choice)
@@ -425,7 +425,7 @@ void choosespeed()
     system("cls");
 }
 
-void SetSize(unsigned uCol, unsigned uLine)//调整控制台大小
+void SetSize(unsigned uCol, unsigned uLine) //调节控制台大小
 {
     char cmd[64];
     sprintf(cmd, "mode con cols=%d lines=%d", uCol, uLine);
